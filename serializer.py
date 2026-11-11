@@ -16,21 +16,28 @@ def serialize(song, data_format):
 # Creator
 def _get_serializer(data_format):
     if data_format == "JSON":
-        return _serialize_to_json
+        return _JSONSerializer
     elif data_format == "XML":
-        return _serialize_to_xml
+        return _XMLSerializer
     else:
         raise ValueError(data_format)
 
 # Products
-def _serialize_to_json(song):
-    song_info = {'id': song.song_id, 'title': song.title, 'artist': song.artist}
-    return json.dumps(song_info)
+class _JSONSerializer:
+    def __init__(self, song):
+        self.song = song
 
-def _serialize_to_xml(song):
-    song_info = et.Element('song', attrib={'id': song.song_id})
-    title = et.SubElement(song_info, 'title')
-    title.text = song.title
-    artist = et.SubElement(song_info, 'artist')
-    artist.text = song.artist
-    return et.tostring(song_info, encoding='unicode')
+    def __str__(self):
+        return json.dumps({'id': self.song.song_id,
+                           'title': self.song.title,
+                           'artist': self.song.artist})
+
+class _XMLSerializer:
+    def __init__(self, song):
+        self.song_info = et.Element('song', attrib={'id': song.song_id})
+        self.title = et.SubElement(self.song_info, 'title')
+        self.title.text = song.title
+        self.artist = et.SubElement(self.song_info, 'artist')
+        self.artist.text = song.artist
+    def __str__(self):
+        return et.tostring(self.song_info, encoding='unicode')
