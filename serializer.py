@@ -8,10 +8,17 @@ class Song:
     title: str
     artist: str
 
+    def use_product(self, product):
+        product.start_object('song', self.song_id)
+        product.add_property('title', self.title)
+        product.add_property('artist', self.artist)
 
-def serialize(song, data_format):
+def serialize(object_to_serialize, data_format):
     serializer_product = _get_serializer(data_format)
-    return str(serializer_product(song))
+    my_product = serializer_product()
+    object_to_serialize.use_product(my_product)
+
+    return str(my_product)
 
 # Creator
 def _get_serializer(data_format):
