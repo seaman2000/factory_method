@@ -11,7 +11,7 @@ class Song:
 
 def serialize(song, data_format):
     serializer_product = _get_serializer(data_format)
-    return serializer_product(song)
+    return str(serializer_product(song))
 
 # Creator
 def _get_serializer(data_format):
