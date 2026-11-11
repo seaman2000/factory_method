@@ -10,14 +10,15 @@ class Song:
 
 
 def serialize(song, data_format):
-    _get_serializer(song, data_format)
+    serializer_product = _get_serializer(data_format)
+    return serializer_product(song)
 
 # Creator
-def _get_serializer(song, data_format):
+def _get_serializer(data_format):
     if data_format == "JSON":
-        _serialize_to_json(song)
+        return _serialize_to_json
     elif data_format == "XML":
-        _serialize_to_xml(song)
+        return _serialize_to_xml
     else:
         raise ValueError(data_format)
 
