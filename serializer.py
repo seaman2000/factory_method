@@ -24,18 +24,28 @@ def _get_serializer(data_format):
 
 # Products
 class _JSONSerializer:
-    def __init__(self, song):
-        self.song = song
+    def __init__(self):
+        self._current_object = None
+
+    def start_object(self, object_name, object_id):
+        self._current_object = {'id': object_id}
+
+    def add_property(self, name, value):
+        self._current_object[name] = value
 
     def __str__(self):
-        return json.dumps(asdict(self.song))
+        return json.dumps(self._current_object)
 
 class _XMLSerializer:
-    def __init__(self, song):
-        self.song_info = et.Element('song', attrib={'id': song.song_id})
-        self.title = et.SubElement(self.song_info, 'title')
-        self.title.text = song.title
-        self.artist = et.SubElement(self.song_info, 'artist')
-        self.artist.text = song.artist
+    def __init__(self):
+        self._element = None
+
+    def start_object(self, object_name, object_id):
+        self._element = et.Element(object_name, attrib={'id': object_id})
+
+    def add_property(self, name, value):
+        prop = et.SubElement(self._element, name)
+        prop.text = value
+
     def __str__(self):
-        return et.tostring(self.song_info, encoding='unicode')
+        return et.tostring(self._element, encoding='unicode')
