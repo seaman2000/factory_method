@@ -13,9 +13,21 @@ class Song:
         product.add_property('title', self.title)
         product.add_property('artist', self.artist)
 
+@dataclass
+class Book:
+    book_id: str
+    title: str
+    author: str
+    publisher: str
+
+    def use_product(self, product):
+        product.start_object('book', self.book_id)
+        product.add_property('title', self.title)
+        product.add_property('author', self.author)
+        product.add_property('publisher', self.publisher)
+
 def serialize(object_to_serialize, data_format):
-    serializer_product = _get_serializer(data_format)
-    my_product = serializer_product()
+    my_product = _get_serializer(data_format)
     object_to_serialize.use_product(my_product)
 
     return str(my_product)
@@ -23,9 +35,9 @@ def serialize(object_to_serialize, data_format):
 # Creator
 def _get_serializer(data_format):
     if data_format == "JSON":
-        return _JSONSerializer
+        return _JSONSerializer()
     elif data_format == "XML":
-        return _XMLSerializer
+        return _XMLSerializer()
     else:
         raise ValueError(data_format)
 
