@@ -1,7 +1,9 @@
 import json
+import yaml
 import xml.etree.ElementTree as et
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
+
 
 class ClientObjectBlueprint(ABC):
 
@@ -57,6 +59,8 @@ class SerializerCreator(CreatorBlueprint):
             return _JSONSerializer()
         elif data_format == "XML":
             return _XMLSerializer()
+        elif data_format == "YAML":
+            return _YAMLSerializer()
         else:
             raise ValueError(data_format)
 
@@ -112,3 +116,7 @@ class _XMLSerializer(SerializationProductBlueprint):
 
     def __str__(self):
         return et.tostring(self._element, encoding='unicode')
+
+class _YAMLSerializer(_JSONSerializer):
+    def __str__(self):
+        return yaml.dump(self._current_object)
