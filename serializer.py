@@ -36,7 +36,6 @@ class Book(ClientObjectBlueprint):
         product.add_property('publisher', self.publisher)
 
 def serialize(object_to_serialize, data_format):
-    creator = SerializerCreator()
     my_product = creator.factory_method(data_format)
     object_to_serialize.use_product(my_product)
     print(creator)
@@ -49,20 +48,23 @@ class CreatorBlueprint(ABC):
     def factory_method(self, data_format):
         pass
 
+    def register_format(self, data_format, product):
+        pass
+
 class SerializerCreator(CreatorBlueprint):
     def __init__(self):
         self.data_format = None
+        self._products = dict()
+
+    def register_format(self, data_format, product):
+        self._products[data_format] = product
 
     def factory_method(self, data_format):
         self.data_format = data_format
-        if data_format == "JSON":
-            return _JSONSerializer()
-        elif data_format == "XML":
-            return _XMLSerializer()
-        elif data_format == "YAML":
-            return _YAMLSerializer()
-        else:
-            raise ValueError(data_format)
+        product = self._products.get(data_format)
+        if not product:
+            raise ValueError
+        return product()
 
     def __repr__(self):
         return "Your creator today: Serializer Creator"
@@ -120,3 +122,9 @@ class _XMLSerializer(SerializationProductBlueprint):
 class _YAMLSerializer(_JSONSerializer):
     def __str__(self):
         return yaml.dump(self._current_object)
+
+# Register
+creator = SerializerCreator()
+creator.register_format("JSON", _JSONSerializer)
+creator.register_format("XML", _XMLSerializer)
+creator.register_format("YAML", _YAMLSerializer)
