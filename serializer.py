@@ -67,11 +67,11 @@ class SerializerCreator:
 class SerializationProductBlueprint(ABC):
 
     @abstractmethod
-    def start_object(self):
+    def start_object(self, object_name, object_id):
         pass
 
     @abstractmethod
-    def add_property(self):
+    def add_property(self, name, value):
         pass
 
 class _JSONSerializer(SerializationProductBlueprint):
