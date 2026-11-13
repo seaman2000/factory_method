@@ -27,19 +27,39 @@ class Book:
         product.add_property('publisher', self.publisher)
 
 def serialize(object_to_serialize, data_format):
-    my_product = _get_serializer(data_format)
+    creator = SerializerCreator()
+    my_product = creator.get_serializer(data_format)
     object_to_serialize.use_product(my_product)
-
+    print(creator)
     return str(my_product)
 
 # Creator
-def _get_serializer(data_format):
-    if data_format == "JSON":
-        return _JSONSerializer()
-    elif data_format == "XML":
-        return _XMLSerializer()
-    else:
-        raise ValueError(data_format)
+class SerializerCreator:
+    def __init__(self):
+        self.data_format = None
+
+    def get_serializer(self, data_format):
+        if data_format == "JSON":
+            return _JSONSerializer()
+        elif data_format == "XML":
+            return _XMLSerializer()
+        else:
+            raise ValueError(data_format)
+
+    def __repr__(self):
+        return "Your creator today: Serializer Creator"
+
+    def __str__(self):
+        return f"""
+        Dear Client,
+        
+        Thank you for your purchase of:
+        Serializer: {self.data_format}
+        
+        {self.__repr__()}
+        
+        Your product is below:
+        """
 
 # Products
 class _JSONSerializer:
