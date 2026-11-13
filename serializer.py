@@ -3,7 +3,7 @@ import yaml
 import xml.etree.ElementTree as et
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
-
+from typing import Protocol
 
 class ClientObjectBlueprint(ABC):
 
@@ -82,22 +82,20 @@ class SerializerCreator(CreatorBlueprint):
         """
 
 # Products
-class SerializationProductBlueprint(ABC):
+class SerializationProduct(Protocol):
 
-    @abstractmethod
-    def start_object(self, object_name, object_id):
-        pass
+    def start_object(self, object_name:str, object_id:str) -> None: ...
 
-    @abstractmethod
-    def add_property(self, name, value):
-        pass
+    def add_property(self, name:str, value:str) -> None: ...
 
-class _JSONSerializer(SerializationProductBlueprint):
+    def __str__(self) -> str: ...
+
+class _JSONSerializer:
     def __init__(self):
-        self._current_object = None
+        self._current_object = dict()
 
     def start_object(self, object_name, object_id):
-        self._current_object = {'id': object_id}
+        self.add_property('id', object_id)
 
     def add_property(self, name, value):
         self._current_object[name] = value
@@ -105,7 +103,7 @@ class _JSONSerializer(SerializationProductBlueprint):
     def __str__(self):
         return json.dumps(self._current_object)
 
-class _XMLSerializer(SerializationProductBlueprint):
+class _XMLSerializer:
     def __init__(self):
         self._element = None
 
