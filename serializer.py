@@ -39,6 +39,7 @@ class SerializerCreator:
         self.data_format = None
 
     def get_serializer(self, data_format):
+        self.data_format = data_format
         if data_format == "JSON":
             return _JSONSerializer()
         elif data_format == "XML":
