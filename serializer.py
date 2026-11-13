@@ -1,6 +1,7 @@
 import json
 import xml.etree.ElementTree as et
 from dataclasses import dataclass, asdict
+from abc import ABC, abstractmethod
 
 @dataclass
 class Song:
@@ -63,7 +64,17 @@ class SerializerCreator:
         """
 
 # Products
-class _JSONSerializer:
+class SerializationProductBlueprint(ABC):
+
+    @abstractmethod
+    def start_object(self):
+        pass
+
+    @abstractmethod
+    def add_property(self):
+        pass
+
+class _JSONSerializer(SerializationProductBlueprint):
     def __init__(self):
         self._current_object = None
 
@@ -76,7 +87,7 @@ class _JSONSerializer:
     def __str__(self):
         return json.dumps(self._current_object)
 
-class _XMLSerializer:
+class _XMLSerializer(SerializationProductBlueprint):
     def __init__(self):
         self._element = None
 
