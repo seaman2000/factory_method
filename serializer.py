@@ -3,8 +3,14 @@ import xml.etree.ElementTree as et
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 
+class ClientObjectBlueprint(ABC):
+
+    @abstractmethod
+    def use_product(self, product):
+        pass
+
 @dataclass
-class Song:
+class Song(ClientObjectBlueprint):
     song_id: str
     title: str
     artist: str
@@ -15,7 +21,7 @@ class Song:
         product.add_property('artist', self.artist)
 
 @dataclass
-class Book:
+class Book(ClientObjectBlueprint):
     book_id: str
     title: str
     author: str
