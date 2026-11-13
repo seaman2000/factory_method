@@ -16,11 +16,13 @@ class Song(ClientObjectBlueprint):
     song_id: str
     title: str
     artist: str
+    playlist:  str
 
     def use_product(self, product):
         product.start_object('song', self.song_id)
         product.add_property('title', self.title)
         product.add_property('artist', self.artist)
+        product.add_property('playlist', self.playlist)
 
 @dataclass
 class Book(ClientObjectBlueprint):
@@ -48,6 +50,7 @@ class CreatorBlueprint(ABC):
     def factory_method(self, data_format):
         pass
 
+    @abstractmethod
     def register_format(self, data_format, product):
         pass
 
